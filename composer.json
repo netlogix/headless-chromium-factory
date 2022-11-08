@@ -1,0 +1,15 @@
+{
+  "name": "netlogix/headless-chromium-factory",
+  "description": "Companion package for chrome-php/chrome to provide a factories for local and remote chromium instances with an common interface",
+  "license": "MIT",
+  "require": {
+    "ext-curl": "*",
+    "ext-json": "*",
+    "chrome-php/chrome": "^1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Netlogix\\HeadlessChromiumFactory\\": "src/"
+    }
+  }
+}
