@@ -6,6 +6,7 @@ namespace Netlogix\HeadlessChromiumFactory;
 
 use HeadlessChromium\Browser;
 use HeadlessChromium\Communication\Connection;
+use RuntimeException;
 
 class RemoteBrowserFactory implements BrowserFactoryInterface
 {
@@ -27,7 +28,12 @@ class RemoteBrowserFactory implements BrowserFactoryInterface
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Host: localhost']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-        $result = json_decode(curl_exec($ch), true);
+        $response = curl_exec($ch);
+        if ($response === false) {
+            throw new RuntimeException(sprintf('Could not connect to remote host (%s)', curl_error($ch)), 1680246811);
+        }
+
+        $result = json_decode($response, true);
 
         $websocketUrl = str_replace(
             'localhost',
