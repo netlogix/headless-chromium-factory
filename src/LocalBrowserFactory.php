@@ -6,6 +6,7 @@ namespace Netlogix\HeadlessChromiumFactory;
 
 use HeadlessChromium\Browser;
 use HeadlessChromium\BrowserFactory;
+use Psr\Log\LoggerInterface;
 
 class LocalBrowserFactory implements BrowserFactoryInterface
 {
@@ -19,8 +20,18 @@ class LocalBrowserFactory implements BrowserFactoryInterface
         $this->browserOptions = $browserOptions;
     }
 
-    public function createBrowser(): Browser
+    public function createBrowser(?LoggerInterface $logger = null, ?int $sendSyncDefaultTimeout = null): Browser
     {
-        return $this->browserFactory->createBrowser($this->browserOptions);
+        $options = $this->browserOptions;
+
+        if ($logger !== null) {
+            $options['debugLogger'] = $logger;
+        }
+
+        if ($sendSyncDefaultTimeout !== null) {
+            $options['sendSyncDefaultTimeout'] = $sendSyncDefaultTimeout;
+        }
+
+        return $this->browserFactory->createBrowser($options);
     }
 }

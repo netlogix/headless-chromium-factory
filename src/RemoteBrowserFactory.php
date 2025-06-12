@@ -6,6 +6,7 @@ namespace Netlogix\HeadlessChromiumFactory;
 
 use HeadlessChromium\Browser;
 use HeadlessChromium\Communication\Connection;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class RemoteBrowserFactory implements BrowserFactoryInterface
@@ -20,7 +21,7 @@ class RemoteBrowserFactory implements BrowserFactoryInterface
         $this->remoteDebuggingPort = $remoteDebuggingPort;
     }
 
-    public function createBrowser(): Browser
+    public function createBrowser(?LoggerInterface $logger = null, ?int $sendSyncDefaultTimeout = null): Browser
     {
         $ch = curl_init();
 
@@ -41,7 +42,7 @@ class RemoteBrowserFactory implements BrowserFactoryInterface
             $result['webSocketDebuggerUrl']
         );
 
-        $connection = new Connection($websocketUrl);
+        $connection = new Connection($websocketUrl, $logger, $sendSyncDefaultTimeout);
         $connection->connect();
 
         return new Browser($connection);
